@@ -498,6 +498,50 @@ SOFTWARE.
         }
     }
 
+    // === SyncPlay 同步支持 ===
+    function isSyncPlayActive() {
+        try {
+            const sp = window.SyncPlay?.Manager;
+            return sp && typeof sp.isSyncPlayEnabled === 'function' && sp.isSyncPlayEnabled();
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function setRateViaSyncPlay(rate) {
+        // 通过 SyncPlay 的 player wrapper 设置速率，确保兼容
+        try {
+            const sp = window.SyncPlay?.Manager;
+            if (sp && typeof sp.getPlayerWrapper === 'function') {
+                const wrapper = sp.getPlayerWrapper();
+                if (wrapper && typeof wrapper.setPlaybackRate === 'function') {
+                    wrapper.setPlaybackRate(rate);
+                    return true;
+                }
+            }
+        } catch (e) {
+            console.log('[Inject] SyncPlay setRate failed:', e);
+        }
+        return false;
+    }
+
+    async function broadcastPlaybackRateToGroup(rate) {
+        try {
+            const sp = window.SyncPlay?.Manager;
+            if (!sp || typeof sp.isSyncPlayEnabled !== 'function' || !sp.isSyncPlayEnabled()) return;
+
+            const sessions = await ApiClient.getSessions();
+            const deviceId = ApiClient.deviceId();
+
+            for (const session of sessions) {
+                if (session.DeviceId === deviceId) continue;
+                ApiClient.sendPlayStateCommand(session.Id, 'PlaybackRate', { PlaybackRate: rate });
+            }
+        } catch (e) {
+            console.log('[Inject] SyncPlay broadcast failed:', e);
+        }
+    }
+
     function hideOSDControls() {
         if (osdBottomElement) {
             if (!osdBottomElement.classList.contains('videoOsdBottom-hidden')) {
@@ -553,7 +597,17 @@ SOFTWARE.
         if (!vid || isFast) return;
         originalRate = vid.playbackRate || 1;
         const newRate = originalRate * 2;
-        vid.playbackRate = newRate;
+
+        if (isSyncPlayActive()) {
+            // SyncPlay 激活时通过 wrapper 设置，确保兼容
+            if (!setRateViaSyncPlay(newRate)) {
+                vid.playbackRate = newRate;
+            }
+            broadcastPlaybackRateToGroup(newRate);
+        } else {
+            vid.playbackRate = newRate;
+        }
+
         isFast = true;
         showOverlay(newRate);
     }
@@ -561,7 +615,16 @@ SOFTWARE.
     function restore() {
         const vid = getVideo();
         if (!vid || !isFast) return;
-        vid.playbackRate = originalRate;
+
+        if (isSyncPlayActive()) {
+            if (!setRateViaSyncPlay(originalRate)) {
+                vid.playbackRate = originalRate;
+            }
+            broadcastPlaybackRateToGroup(originalRate);
+        } else {
+            vid.playbackRate = originalRate;
+        }
+
         isFast = false;
         hideOverlay();
     }
