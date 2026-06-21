@@ -159,8 +159,9 @@ jobs:
             
             # 5. 检出目标分支的最新代码
             # 注意：此处使用 --force 确保 Checkout Action v4/v5 能在 Detached HEAD 状态下切换
-            git fetch origin $TARGET_BRANCH
-            git checkout --force $TARGET_BRANCH
+            # 使用 refs/heads/ 前缀避免 tag 触发时 "master" 引用歧义
+            git fetch origin refs/heads/$TARGET_BRANCH
+            git checkout --force refs/heads/$TARGET_BRANCH
             
             # 6. 合并临时分支上的 Commit (Fast-forward 或创建一个新的合并 Commit)
             # 使用 --no-ff 确保总创建一个新的合并提交，这有助于保持历史记录清晰
