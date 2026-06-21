@@ -4,7 +4,7 @@
     "name": "Better Player",
     "overview": "Provides a generic script injection framework to offer highly customizable player enhancements for the Jellyfin Web client. The current version defaults to injecting better_player.js to enhance the Web player interface.",
     "description": "The Better Player (Better Web Player Extension) is a Jellyfin plugin based on a generic script injection framework. By injecting the better_player.js script, it aims to deliver an immersive, Bilibili-like experience, comprehensively enhancing keyboard, mouse, and mobile touch controls for highly efficient and intuitive web playback operation.",
-    "owner": "GolLight",
+    "owner": "yujianke100",
     "category": "Playback",
     "imageUrl": "https://raw.githubusercontent.com/GolLight/BetterPlayerPlugin/master/Images/logo.png",
     "versions": [
