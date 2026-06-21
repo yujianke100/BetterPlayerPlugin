@@ -10,6 +10,14 @@
     "versions": [
       {
         "version": "1.1.0.0",
+        "changelog": "* fix: 手动触发时从 csproj 读取版本号，避免 branch name 被当版本号\n* ci: use dynamic repo URL in workflow, update manifest owner\n* feat: 长按倍速支持 SyncPlay 同步（广播播放速率到组内成员）\n* Merge chore(release) for v1.1.0.0 update.\n* chore(release): Update manifest and csproj for v1.1.0.0 release.\n* Modify the settings UI\n* Add XML comments for explanations\n* fix  format\n* Fix compilation warnings\n* fix the issue of displaying errors related to dll versions\n* Merge chore(release) for v1.0.0.1 update.\n* chore(release): Update manifest and csproj for v1.0.0.1 release.\n* fix yml\n* v1.0.0.1\n* fix yml\n* Update main.yml\n* fix yml\n* fix yml\n* Update main.yml\n* Create main.yml\n* fix md 5\n* fix md5\n* fix version\n* update right md5\n* fix time\n* fix installError checksum is null\n* Update README.md\n* add logo image\n* Update README.md\n* init\n* Refactor: Move project to new parent directory (Jellyfin.Plugin.BetterPlayer) and update project structure.\n* fix\n* Merge branch 'master' of github.com:GolLight/BetterPlayerPlugin\n* Initial commit\n* format\n* v1.0\n* fix\n* fix 2\n* fix bug\n* fix debug error\n* update readme\n* init",
+        "targetAbi": "10.11.0.0",
+        "sourceUrl": "https://github.com/yujianke100/BetterPlayerPlugin/releases/download/v1.1.0.0/BetterPlayerPlugin.zip",
+        "checksum": "55126CA8F902654855E06839F9495363",
+        "timestamp": "2026-06-21T08:30:09Z"
+      },
+      {
+        "version": "1.1.0.0",
         "changelog": "* Modify the settings UI\n* Add XML comments for explanations\n* fix  format\n* Fix compilation warnings\n* fix the issue of displaying errors related to dll versions\n* Merge chore(release) for v1.0.0.1 update.\n* chore(release): Update manifest and csproj for v1.0.0.1 release.\n* fix yml\n* v1.0.0.1\n* fix yml\n* Update main.yml\n* fix yml\n* fix yml\n* Update main.yml\n* Create main.yml\n* fix md 5\n* fix md5\n* fix version\n* update right md5\n* fix time\n* fix installError checksum is null\n* Update README.md\n* add logo image",
         "targetAbi": "10.11.0.0",
         "sourceUrl": "https://github.com/GolLight/BetterPlayerPlugin/releases/download/v1.1.0.0/BetterPlayerPlugin.zip",
