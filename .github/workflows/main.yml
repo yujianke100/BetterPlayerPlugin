@@ -136,49 +136,20 @@ jobs:
              
           mv manifest_updated.json ${{ env.MANIFEST_PATH }}
 
-      # 7. 提交 manifest.json 和 .csproj
-      - name: 💾 提交更新后的文件
+      # 7. 提交 manifest.json 和 .csproj 到 master
+      - name: 💾 提交更新后的文件到 master
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add ${{ env.MANIFEST_PATH }}
           git add ${{ env.CS_PROJ_PATH }}
-          # 检查是否有实际改动，没有则不执行 commit
           if git diff --staged --quiet; then
-            echo "没有文件更改需要提交。"
-          else
-            git commit -m "chore(release): Update manifest and csproj for v${{ env.PLUGIN_VERSION }} release."
-            # 如果处于分离头指针状态 (即是 Tag 触发)，BASE_REF 为 HEAD。
-            # 此时我们假设目标分支为 master 或 main。
-            # 为了安全，我们通常直接推送到 master/main 分支。
-            TARGET_BRANCH="${{ github.event.repository.default_branch }}"
-            echo "尝试将修改推送到目标分支: $TARGET_BRANCH"
-            # 4. 创建并切换到一个临时分支 (基于当前修改的 Commit)
-            TEMP_BRANCH="release-update-temp"
-            git branch $TEMP_BRANCH
-            
-            # 5. 检出目标分支的最新代码
-            # 注意：此处使用 --force 确保 Checkout Action v4/v5 能在 Detached HEAD 状态下切换
-            # 使用 refs/heads/ 前缀避免 tag 触发时 "master" 引用歧义
-            git fetch origin refs/heads/$TARGET_BRANCH
-            git checkout --force refs/heads/$TARGET_BRANCH
-            
-            # 6. 合并临时分支上的 Commit (Fast-forward 或创建一个新的合并 Commit)
-            # 使用 --no-ff 确保总创建一个新的合并提交，这有助于保持历史记录清晰
-            if git merge --no-ff $TEMP_BRANCH -m "Merge chore(release) for v${{ env.PLUGIN_VERSION }} update." ; then
-                echo "✅ 合并成功。"
-            else
-                echo "❌ 合并失败。可能需要手动解决冲突，但对于 manifest.json 这种自动化修改，不应该出现。"
-                # 如果出现冲突，终止工作流
-                exit 1 
-            fi
-            
-            # 7. 推送合并后的结果到远程目标分支
-            git push origin $TARGET_BRANCH
-            
-            # 8. 清理临时分支
-            git branch -D $TEMP_BRANCH
+            echo "没有文件更改，跳过提交。"
+            exit 0
           fi
+          git commit -m "chore(release): Update manifest and csproj for v${{ env.PLUGIN_VERSION }} release."
+          # tag 就在 master tip 上，直接 fast-forward 推送
+          git push origin HEAD:refs/heads/${{ github.event.repository.default_branch }}
 
       # 8. 创建 GitHub Release
       - name: 🏷️ 创建 GitHub Release 并上传资产
